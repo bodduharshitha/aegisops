@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aegisops-api
+  namespace: aegisops
+  labels:
+    app: aegisops-api
+
+spec:
+  replicas: 2
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+
+  selector:
+    matchLabels:
+      app: aegisops-api
+
+  template:
+    metadata:
+      labels:
+        app: aegisops-api
+
+    spec:
+      containers:
+        - name: aegisops-api
+
+          image: aegisops-api:0.1.0
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+
+          env:
+            - name: APP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: aegisops-config
+                  key: APP_NAME
+
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: aegisops-config
+                  key: APP_ENV
+
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: aegisops-config
+                  key: LOG_LEVEL
+
+            - name: DEMO_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aegisops-secret
+                  key: DEMO_API_KEY
+
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            failureThreshold: 30
+            periodSeconds: 2
+
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3

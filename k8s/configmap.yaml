@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aegisops-config
+  namespace: aegisops
+data:
+  APP_NAME: "AegisOps"
+  APP_ENV: "kubernetes"
+  LOG_LEVEL: "INFO"
