@@ -10,3 +10,9 @@ __pycache__/
 .DS_Store
 .idea/
 .vscode/
+
+# Local n8n runtime data
+/n8n/data/
+
+# Local Kubernetes backup
+/k8s/service-backup.yaml

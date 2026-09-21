@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: aegisops-n8n
+  namespace: aegisops
+spec:
+  route:
+    receiver: aegisops-n8n
+    groupBy:
+      - alertname
+    groupWait: 10s
+    groupInterval: 1m
+    repeatInterval: 1h
+
+  receivers:
+    - name: aegisops-n8n
+      webhookConfigs:
+        - url: "http://host.docker.internal:5678/webhook/aegisops-alert"
+          sendResolved: true

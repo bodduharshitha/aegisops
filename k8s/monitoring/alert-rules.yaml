@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: aegisops-alerts
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: aegisops.rules
+      rules:
+        - alert: AegisOpsAPIDown
+          expr: absent(up{namespace="aegisops",service="aegisops-api"})
+          for: 1m
+          labels:
+            severity: critical
+            service: aegisops-api
+          annotations:
+            summary: "AegisOps API is down"
+            description: "Prometheus cannot find a scrape target for the AegisOps API metrics endpoint."
