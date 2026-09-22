@@ -1,6 +1,18 @@
 # AegisOps
 [![CI](https://github.com/bodduharshitha/aegisops/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_GITHUB_USERNAME/aegisops/actions/workflows/ci.yml)
 
+## 🚀 Live Demo
+
+[![Open Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Streamlit-red?style=for-the-badge)](https://aegisops-devops.streamlit.app)
+
+**[Open the AegisOps Dashboard](https://aegisops-devops.streamlit.app)**
+
+Interactive public demonstration of the Kubernetes incident-response workflow:
+
+**Detect → Understand → Remediate → Verify → Audit**
+
+> The public demo is a safe, hosted demonstration. The full Kubernetes, Prometheus, Alertmanager, n8n, Ollama, and remediation environment can be run locally from this repository.
+
 ## AI-Powered Kubernetes Incident Response & DevOps Automation Platform
 
 ![AegisOps Architecture](docs/images/aegisops-architecture.png)
