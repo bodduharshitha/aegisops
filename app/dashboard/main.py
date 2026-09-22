@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from zoneinfo import ZoneInfo
 import streamlit as st
 
 from app.dashboard.components import (
@@ -10,6 +10,7 @@ from app.dashboard.components import (
     section_title,
 )
 from app.dashboard.data import (
+    format_audit_timestamp,
     get_audit_events,
     get_cluster_health,
 )
@@ -304,19 +305,45 @@ if page == "Overview":
             st.markdown(
                 f"**{status}**  •  `{runbook}`  •  `{action}`"
             )
+            
+            try:
+                audit_time = datetime.fromisoformat(timestamp)
+                audit_time = audit_time.astimezone(ZoneInfo("Asia/Kolkata"))
 
-            details = (
-                f"{timestamp}  |  "
-                f"executed={executed}"
+                hour = audit_time.strftime("%I").lstrip("0")
+
+                formatted_timestamp = (
+                    f"{audit_time.strftime('%b')} "
+                    f"{audit_time.day}, "
+                    f"{audit_time.year} • "
+                    f"{hour}:{audit_time.strftime('%M')} "
+                    f"{audit_time.strftime('%p')} IST"
+                )
+            except (TypeError, ValueError):
+                formatted_timestamp = timestamp
+
+            executed_text = "Yes" if executed else "No"
+
+            if healthy is True:
+                verification_text = "Healthy"
+            elif healthy is False:
+                verification_text = "Failed"
+            else:
+                verification_text = "Not completed"
+
+            endpoint_text = (
+                str(endpoint_count)
+                if endpoint_count is not None
+                else "N/A"
             )
 
-            if healthy is not None:
-                details += f"  |  healthy={healthy}"
-
-            if endpoint_count is not None:
-                details += f"  |  endpoints={endpoint_count}"
-
-            st.caption(details)
+            st.caption(
+                f"{formatted_timestamp} • "
+                f"Executed: {executed_text} • "
+                f"Verified: {verification_text} • "
+                f"Endpoints: {endpoint_text}"
+            )
+            
             st.divider()
 
     section_title("Incident Response Pipeline")
@@ -367,7 +394,9 @@ elif page == "Incident Response":
 
     incident_timeline()
 
-    render_incident_simulator()
+    render_incident_simulator(
+        endpoint_count=endpoints.get("count", 0)
+    )
 
     st.markdown(
         """

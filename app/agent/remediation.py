@@ -7,40 +7,56 @@ ALLOWED_RUNBOOKS = {
 
 
 def restore_service_selector(namespace: str = "aegisops") -> dict:
-    """Restore the known-good AegisOps Service selector."""
+    """Restore the known-good AegisOps Service manifest."""
+
+    import time
 
     command = [
         "kubectl",
-        "patch",
-        "service",
-        "aegisops-api",
-        "-n",
-        namespace,
-        "--type=merge",
-        "--patch-file",
-        "k8s/service-patch.json",
+        "apply",
+        "--validate=false",
+        "-f",
+        "k8s/service.yaml",
     ]
 
-    result = subprocess.run(
-        command,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    max_attempts = 3
+    last_error = ""
 
-    if result.returncode != 0:
-        return {
-            "success": False,
-            "runbook": "RB-001",
-            "action": "RESTORE_SERVICE_SELECTOR",
-            "output": result.stderr.strip(),
-        }
+    for attempt in range(1, max_attempts + 1):
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        if result.returncode == 0:
+            return {
+                "success": True,
+                "runbook": "RB-001",
+                "action": "RESTORE_SERVICE_SELECTOR",
+                "output": result.stdout.strip(),
+                "attempt": attempt,
+            }
+
+        last_error = result.stderr.strip()
+
+        # Retry only the known transient Kubernetes API failure.
+        if "TLS handshake timeout" not in last_error:
+            break
+
+        if attempt < max_attempts:
+            time.sleep(2 * attempt)
 
     return {
-        "success": True,
+        "success": False,
         "runbook": "RB-001",
         "action": "RESTORE_SERVICE_SELECTOR",
-        "output": result.stdout.strip(),
+        "output": (
+            f"Unable to restore Service after {attempt} attempt(s): "
+            f"{last_error}"
+        ),
+        "attempt": attempt,
     }
 
 
