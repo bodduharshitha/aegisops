@@ -1,4 +1,4 @@
-import subprocess
+﻿import subprocess
 
 
 ALLOWED_RUNBOOKS = {
@@ -114,4 +114,45 @@ def verify_service_endpoints(
         "endpoint_count": endpoint_count,
         "service": service,
         "namespace": namespace,
+    }
+
+def simulate_incident(namespace: str = "aegisops") -> dict:
+    """Deliberately create the predefined AegisOps demo incident.
+
+    This is a fixed demonstration action.
+    It does not accept arbitrary kubectl commands,
+    resource names, or selectors.
+    """
+
+    command = [
+        "kubectl",
+        "patch",
+        "service",
+        "aegisops-api",
+        "-n",
+        namespace,
+        "--type=merge",
+        "-p",
+        '{"spec":{"selector":{"app":"aegisops-api-test"}}}',
+    ]
+
+    result = subprocess.run(
+        command,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    if result.returncode != 0:
+        return {
+            "success": False,
+            "simulation": "SERVICE_SELECTOR_MISMATCH",
+            "output": result.stderr.strip(),
+        }
+
+    return {
+        "success": True,
+        "simulation": "SERVICE_SELECTOR_MISMATCH",
+        "output": result.stdout.strip(),
+        "expected_effect": "Service should have zero active endpoints.",
     }
