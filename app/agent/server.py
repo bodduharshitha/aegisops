@@ -1,6 +1,7 @@
-from fastapi import FastAPI, HTTPException
+﻿from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
+from app.agent.audit import record_event
 from app.agent.controller import handle_ai_decision
 
 app = FastAPI(
@@ -27,6 +28,11 @@ def remediate(request: RemediationRequest):
         {
             "runbook": request.runbook,
         }
+    )
+
+    record_event(
+        runbook=request.runbook,
+        result=result,
     )
 
     if not result.get("success") and result.get("executed") is False:
