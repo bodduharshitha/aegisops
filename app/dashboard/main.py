@@ -14,7 +14,7 @@ from app.dashboard.data import (
     get_cluster_health,
 )
 from app.dashboard.styles import load_styles
-
+from app.dashboard.simulator import render_incident_simulator
 
 st.set_page_config(
     page_title="AegisOps",
@@ -366,6 +366,8 @@ elif page == "Incident Response":
     )
 
     incident_timeline()
+
+    render_incident_simulator()
 
     st.markdown(
         """
