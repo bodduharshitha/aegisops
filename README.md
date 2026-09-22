@@ -3,6 +3,8 @@
 
 ## AI-Powered Kubernetes Incident Response & DevOps Automation Platform
 
+![AegisOps Architecture](docs/images/aegisops-architecture.png)
+
 AegisOps is a DevOps proof-of-concept that demonstrates automated Kubernetes incident detection, AI-assisted diagnosis, controlled remediation, verification, and auditability.
 
 The platform deliberately creates a Kubernetes Service failure, detects the resulting incident through Prometheus and Alertmanager, routes the alert through n8n, uses a local LLM to identify the approved remediation runbook, executes that runbook through a controlled Python remediation agent, and verifies that Kubernetes has recovered.
