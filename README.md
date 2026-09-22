@@ -1,4 +1,5 @@
 # AegisOps
+[![CI](https://github.com/bodduharshitha/aegisops/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_GITHUB_USERNAME/aegisops/actions/workflows/ci.yml)
 
 ## AI-Powered Kubernetes Incident Response & DevOps Automation Platform
 
