@@ -5,8 +5,6 @@
 
 [![Open Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Streamlit-red?style=for-the-badge)](https://aegisops-devops.streamlit.app)
 
-**[Open the AegisOps Dashboard](https://aegisops-devops.streamlit.app)**
-
 Interactive public demonstration of the Kubernetes incident-response workflow:
 
 **Detect → Understand → Remediate → Verify → Audit**
